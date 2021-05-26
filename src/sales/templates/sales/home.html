@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block scripts %}
+    <script src="{% static 'sales/home.js' %}" defer></script>
+{% endblock scripts %}
+
+{% block title %}
+    Home
+{% endblock title %}
+
+{% block content %}
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div id="alert-box" ></div>
+                <form id="report-form">
+                    {% csrf_token %}
+                    {{ report_form|crispy }}
+                    <button type="submit" class="btn btn-info mt-2">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+{% if no_data %}
+    <div class="alert alert-warning" role="alert">
+        No Data available
+    </div>
+{% endif %}
+<form action="" method="POST">
+    {% csrf_token %}
+    {{search_form|crispy}}
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if sales_df %}
+    <h3>Sales</h3>
+    {{sales_df|safe}}
+    <h3>Position</h3>
+    {{position_df|safe}}
+    <h4>Merged</h4>
+    {{merged_df|safe}}
+    <h4>Groupby</h4>
+    {{ df|safe }}
+    <h4>Chart</h4>
+    <img src="data:image/png;base64, {{ chart|safe }}" id="img">
+{% else %}
+
+{% endif %}
+<br>
+<button class="btn btn-primary not-visible" id="report-btn" data-bs-toggle="modal" data-bs-target="#reportModal" >add report</button>
+{% endblock content %}
+
